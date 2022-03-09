@@ -5,6 +5,7 @@ public class User {
     private Long id;
     private String username;
 
+
     public Long getId() {
         return id;
     }
