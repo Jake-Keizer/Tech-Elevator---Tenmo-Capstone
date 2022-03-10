@@ -3,47 +3,42 @@ package com.techelevator.tenmo.model;
 public class Account {
 
 
-        private int intId;
-        private int userId;
+        private long accountId;
+        private long userId;
         private double balance;
 
-        public void AccountTable() {}
+        public Account() {}
 
-        public void AccountTable(int intId, int userId, double balance) {
-            this.intId = intId;
+        public Account(long accountId, long userId, double balance) {
+            this.accountId = accountId;
             this.userId = userId;
             this.balance = balance;
-
-
         }
 
-        public void setIntId(int intId) {
-            this.intId = intId;
-        }
-
-        public void setUserId(int userId) {
-            this.userId = userId;
-        }
-
-        public void setBalance(double balance) {
-            this.balance = balance;
-        }
-
-
-        public int getIntId() {
-            return intId;
-        }
-
-        public int getUserId() {
-            return userId;
-        }
-
-        public double getBalance() {
-            return balance;
-        }
-
-
+    public long getAccountId() {
+        return accountId;
     }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+}
 
 
 
