@@ -44,9 +44,7 @@ public class Transfer {
         this.amount = amount;
     }
 
-    public long  getTransferId() {
-        return transferId;
-    }
+    
 
     public long  getTransferTypeId() {
         return transferTypeId;
@@ -63,6 +61,11 @@ public class Transfer {
     public long  getAccountTo() {
         return accountTo;
     }
+
+    public long getTransferId() {
+        return transferId;
+    }
+
 
     public double getAmount() {
         return amount;
