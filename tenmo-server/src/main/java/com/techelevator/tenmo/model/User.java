@@ -1,15 +1,29 @@
 package com.techelevator.tenmo.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class User {
 
+   @JsonProperty("userID")
+   @Min(value = 1, message = "User ID Should Be a Positive Number.")
+   @NotBlank(message = "This Field ID Is Required.")
    private Long id;
+
+   @NotBlank(message = "User Name Is Required.")
    private String username;
+
+   @NotBlank(message = "User Password Is Required.")
    private String password;
+
    private boolean activated;
+
+
    private Set<Authority> authorities = new HashSet<>();
 
    public User() { }

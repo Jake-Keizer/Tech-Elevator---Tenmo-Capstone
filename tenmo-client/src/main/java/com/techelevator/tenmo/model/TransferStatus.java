@@ -1,13 +1,7 @@
 package com.techelevator.tenmo.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-
 public class TransferStatus {
 
-    @JsonProperty("transferStatusID")
     private long transferStatusId;
     private String transferStatusDesc;
 
@@ -42,8 +36,5 @@ public class TransferStatus {
                 ", transferStatusDesc='" + transferStatusDesc + '\'' +
                 '}';
     }
-
-
-
 
 }
