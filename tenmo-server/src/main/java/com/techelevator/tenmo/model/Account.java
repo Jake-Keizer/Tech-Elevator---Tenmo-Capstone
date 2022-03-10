@@ -3,17 +3,17 @@ package com.techelevator.tenmo.model;
 public class Account {
 
 
-        private long accountId;
-        private long userId;
-        private double balance;
+    private long accountId;
+    private long userId;
+    private double balance;
 
-        public Account() {}
+    public Account() {}
 
-        public Account(long accountId, long userId, double balance) {
-            this.accountId = accountId;
-            this.userId = userId;
-            this.balance = balance;
-        }
+    public Account(long accountId, long userId, double balance) {
+        this.accountId = accountId;
+        this.userId = userId;
+        this.balance = balance;
+    }
 
     public long getAccountId() {
         return accountId;
@@ -39,7 +39,3 @@ public class Account {
         this.balance = balance;
     }
 }
-
-
-
-

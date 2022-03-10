@@ -1,13 +1,7 @@
 package com.techelevator.tenmo.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-
 public class TransferType {
 
-    @JsonProperty("transferTypeID")
     private long  transferTypeId;
     private String transferTypeDesc;
 
@@ -18,7 +12,7 @@ public class TransferType {
         this.transferTypeDesc = transferTypeDesc;
     }
 
-    public long  getTransferTypeId() {
+    public long getTransferTypeId() {
         return transferTypeId;
     }
 
@@ -44,8 +38,6 @@ public class TransferType {
                 ", transferTypeDesc='" + transferTypeDesc + '\'' +
                 '}';
     }
-
-
 
 
 }
