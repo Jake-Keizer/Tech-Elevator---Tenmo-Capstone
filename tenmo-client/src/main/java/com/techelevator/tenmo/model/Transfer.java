@@ -12,7 +12,7 @@ public class Transfer {
 
     public Transfer() {}
 
-    public Transfer(long transferId, long transferTypeId, long  transferStatusId, long  accountFrom, long  accountTo, double amount) {
+    public  Transfer(long transferId, long transferTypeId, long  transferStatusId, long  accountFrom, long  accountTo, double amount) {
         this.transferId = transferId;
         this.transferTypeId = transferTypeId;
         this.transferStatusId = transferStatusId;

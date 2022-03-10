@@ -20,9 +20,9 @@ public class Account {
 
 
 
-        public void AccountTable() {}
+        public void Account() {}
 
-        public void AccountTable(long accountId, long userId, double balance) {
+        public void Account(long accountId, long userId, double balance) {
             this.accountId = accountId;
             this.userId = userId;
             this.balance = balance;
