@@ -7,29 +7,22 @@ import javax.validation.constraints.*;
 public class Transfer {
 
 
-    @JsonProperty("transferID")
+
     @Min(value = 1, message = "Transfer ID should Be a Positive Number.")
-    @NotBlank(message = "This Field ID Is Required.")
     private long transferId;
 
-    @JsonProperty("transferTypeID")
     @Min(value = 1, message = "Transfer ID Should Be a Positive Number.")
-    @NotBlank(message = "This Field ID Is Required.")
     private long  transferTypeId;
 
-    @JsonProperty("TransferStatusID")
     private long  transferStatusId;
 
     @Min(value = 1, message = "Account From Should Be a Positive Number.")
-    @NotBlank(message = "The Account Transferring From (user ID) Is Required.")
     private long  accountFrom;
 
     @Min(value = 1, message = "Account To Should Be a Positive Number.")
-    @NotBlank(message = "The Account Transferring To (user ID) Is Required.")
     private long  accountTo;
 
     @Positive(message = "The Amount Transferring Must Be > 0.")
-    @NotBlank(message = "The Account Transferring To Is Required.")
     private double amount;
 
 
@@ -104,7 +97,7 @@ public class Transfer {
         return "TransferStatus{" +
                 "transferId=" + transferId +
                 "transferTypeId=" + transferTypeId +
-                ", transferStatusId='" + transferStatusId +
+                ", transferStatusId=" + transferStatusId +
                 ", accountFrom=" + accountFrom +
                 ", accountTo=" + accountTo +
                 ", amount=" + amount +
