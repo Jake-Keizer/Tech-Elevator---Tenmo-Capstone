@@ -62,10 +62,12 @@ public class JdbcAccountDao implements AccountDao{
         Account account = getAccountById(accountId);
         String sql = "UPDATE account " +
                     "SET balance = balance + ? " +
-                    "WHERE account_id = ?; ";
+                    "WHERE user_id = ?; ";
         try {
-            jdbcTemplate.update(sql, deposit, accountId);
+            int output = jdbcTemplate.update(sql, deposit, accountId);
+            System.out.println("addTo rows affected : " + output);
         } catch (DataAccessException e){
+            e.printStackTrace();
             System.out.println("unable to update balance");
         }
         return account.getBalance();
@@ -76,10 +78,12 @@ public class JdbcAccountDao implements AccountDao{
         Account account = getAccountById(accountId);
         String sql = "UPDATE account " +
                     "SET balance = balance - ? " +
-                    "WHERE account_id = ?; ";
+                    "WHERE user_id = ?; ";
         try {
-            jdbcTemplate.update(sql, withdraw, accountId);
+           int output = jdbcTemplate.update(sql, withdraw, accountId);
+           System.out.println("withdraw rows affected: " + output);
         } catch (DataAccessException e){
+            e.printStackTrace();
             System.out.println("unable to update balance");
         }
         return account.getBalance();

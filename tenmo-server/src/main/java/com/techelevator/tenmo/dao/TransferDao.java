@@ -8,7 +8,7 @@ import java.util.List;
 public interface TransferDao {
 
 
-    void transferFunds(long fromUserId, long toUserId, double amount);
+    boolean sendTransfer(long fromUserId, long toUserId, double amount);
 
     List<Transfer> getTransfersByUserId(long userId);
 

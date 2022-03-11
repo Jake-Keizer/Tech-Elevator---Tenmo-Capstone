@@ -43,7 +43,7 @@ public class AccountService {
                         restTemplate.exchange(API_BASE_URL + id, HttpMethod.GET, makeAuthEntity(), Account.class);
                     account = response.getBody();
                 } catch (RestClientResponseException | ResourceAccessException e) {
-                     BasicLogger.log(e.getMessage());
+                   BasicLogger.log(e.getMessage());
                 }
                 return account;
     }
