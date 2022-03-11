@@ -1,11 +1,14 @@
 package com.techelevator.tenmo.services;
 
 import com.techelevator.tenmo.model.Account;
+import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 public class AccountService {
 
@@ -19,13 +22,13 @@ public class AccountService {
             public void SetAuthToken(String authToken) {this.authToken = authToken;}
 
 
-            public Account[] getAllAccounts() {
+            public Account[]  getAllAccounts(AuthenticatedUser currentUser) {
                 Account[] accounts = null;
 
                 try {
 
                     ResponseEntity<Account[]> response =
-                            restTemplate.exchange(API_BASE_URL, HttpMethod.GET, makeAuthEntity(), Account[].class);
+                            restTemplate.exchange(API_BASE_URL, HttpMethod.GET, makeAuthEntity(currentUser), Account[].class);
                     accounts = response.getBody();
                 } catch (RestClientResponseException | ResourceAccessException e) {
                     BasicLogger.log(e.getMessage());
@@ -34,19 +37,21 @@ public class AccountService {
             }
 
 
+    public double checkAccountBalance(AuthenticatedUser currentUser) {
+        double balance = 0;
+        Account account = new Account();
+        HttpEntity<Account> entity = makeAccountEntity(account);
+        try {
+            entity = restTemplate.exchange(API_BASE_URL + "balance", HttpMethod.GET, makeAuthEntity(currentUser), Account.class);
+            balance = entity.getBody().getBalance();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return balance;
 
-            public Account getOneAccount(int id) {
-                Account account = null;
-                try {
 
-                    ResponseEntity<Account> response =
-                        restTemplate.exchange(API_BASE_URL + id, HttpMethod.GET, makeAuthEntity(), Account.class);
-                    account = response.getBody();
-                } catch (RestClientResponseException | ResourceAccessException e) {
-                     BasicLogger.log(e.getMessage());
-                }
-                return account;
     }
+
 
 
 
@@ -65,10 +70,11 @@ public class AccountService {
 
 
     
-    private HttpEntity<Void> makeAuthEntity() {
+    private HttpEntity<AuthenticatedUser> makeAuthEntity(AuthenticatedUser currentUser) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(authToken);
-        return new HttpEntity<>(headers);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(currentUser.getToken());
+        return new HttpEntity<>(currentUser, headers);
     }
 
     private HttpEntity<Account> makeAccountEntity(Account account) {

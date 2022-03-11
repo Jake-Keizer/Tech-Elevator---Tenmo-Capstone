@@ -2,6 +2,7 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
 
@@ -13,6 +14,8 @@ public class App {
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
+
+    private final AccountService accountService = new AccountService();
 
     public static void main(String[] args) {
         App app = new App();
@@ -66,7 +69,7 @@ public class App {
             consoleService.printMainMenu();
             menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
             if (menuSelection == 1) {
-                viewCurrentBalance();
+                viewCurrentBalance(currentUser);
             } else if (menuSelection == 2) {
                 viewTransferHistory();
             } else if (menuSelection == 3) {
@@ -84,8 +87,9 @@ public class App {
         }
     }
 
-	private void viewCurrentBalance() {
+	private void viewCurrentBalance(AuthenticatedUser currentUser) {
 		// TODO Auto-generated method stub
+       accountService.checkAccountBalance(currentUser);
 		
 	}
 
