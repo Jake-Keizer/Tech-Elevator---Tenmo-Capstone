@@ -10,7 +10,7 @@ import java.security.Principal;
 import java.util.List;
 
 
-//@PreAuthorize("isAuthenticated()")
+@PreAuthorize("isAuthenticated()")
 @RestController
 public class TenmoController {
     private final AccountDao accountDao;
@@ -51,6 +51,17 @@ public class TenmoController {
 
     }
 
+    @GetMapping(path= "/users")
+    public List<Account> listAccounts() {
+        return accountDao.listAccounts();
+    }
+
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping(path = "/transfer")
+    public List<Transfer> listTransfers(Principal user){
+        Account account = accountDao.getAccountByUsername(user.getName());
+        return transferDao.getTransfersByUserId(account.getUserId());
+    }
 
 
 }

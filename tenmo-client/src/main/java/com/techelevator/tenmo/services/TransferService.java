@@ -8,41 +8,36 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TransferService {
 
 
-    public static final String API_BASE_URL = "http://localhost:8080/";
+    public static final String API_BASE_URL = "http://localhost:8080/transfer";
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    private String authToken = null;
-
-
-    public void SetAuthToken(String authToken) {this.authToken = authToken;}
 
     
-    public Transfer[] getAllTransfers() {
-        Transfer[] transfers = null;
-
+    public List<Transfer> getTransfers(String authToken) {
+        List<Transfer> transfers = null;
         try {
-
-            ResponseEntity<Transfer[]> response =
-                    restTemplate.exchange(API_BASE_URL, HttpMethod.GET, makeAuthEntity(), Transfer[].class);
-            transfers = response.getBody();
+            transfers = restTemplate.exchange(API_BASE_URL, HttpMethod.GET, makeAuthEntity(authToken), List.class).getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
-            BasicLogger.log(e.getMessage());
+            System.out.println(e.getMessage());
         }
         return transfers;
     }
 
 
 
-    public Transfer getOneTransfer(int id) {
+    public Transfer getOneTransfer(String authToken) {
         Transfer transfers = null;
         try {
 
             ResponseEntity<Transfer> response =
-                    restTemplate.exchange(API_BASE_URL + id, HttpMethod.GET, makeAuthEntity(), Transfer.class);
+                    restTemplate.exchange(API_BASE_URL, HttpMethod.GET, makeAuthEntity(authToken), Transfer.class);
             transfers = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
@@ -50,35 +45,26 @@ public class TransferService {
         return transfers;
     }
 
-
-
-    public boolean updateTransfer(Transfer updatedTransfer) {
-        HttpEntity<Transfer> entity = makeTransferEntity(updatedTransfer);
-
-        boolean success = false;
+    public Transfer sendTransfer(String authToken, Transfer sendTransfer){
+        Transfer newTransfer = null;
         try {
-            restTemplate.put(API_BASE_URL + updatedTransfer.getTransferId(), entity);
-            success = true;
-        } catch (RestClientResponseException | ResourceAccessException e) {
-            BasicLogger.log(e.getMessage());
+            newTransfer = restTemplate.exchange(API_BASE_URL, HttpMethod.POST, makeTransferEntity(sendTransfer,authToken), Transfer.class).getBody();
+        } catch (RestClientResponseException | ResourceAccessException e){
+            System.out.println(e.getMessage());
         }
-        return success;
+        return newTransfer;
     }
 
 
 
 
-
-
-
-
-    private HttpEntity<Void> makeAuthEntity() {
+    private HttpEntity<Void> makeAuthEntity(String authToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(authToken);
         return new HttpEntity<>(headers);
     }
 
-    private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
+    private HttpEntity<Transfer> makeTransferEntity(Transfer transfer, String authToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authToken);

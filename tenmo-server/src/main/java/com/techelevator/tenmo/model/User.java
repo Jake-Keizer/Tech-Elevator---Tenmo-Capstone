@@ -10,7 +10,6 @@ import java.util.Set;
 
 public class User {
 
-   @JsonProperty("userID")
    @Min(value = 1, message = "User ID Should Be a Positive Number.")
    @NotBlank(message = "This Field ID Is Required.")
    private Long id;

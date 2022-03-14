@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -37,9 +38,18 @@ public class JdbcTransferDao implements TransferDao {
         return true;
     }
 
+
     @Override
     public List<Transfer> getTransfersByUserId(long userId) {
-        return null;
+        List<Transfer> myTransfers = new ArrayList<>();
+        String sql= "SELECT * FROM transfer WHERE account_from = (SELECT account_id FROM account WHERE user_id = ?) " +
+                "OR account_to = (SELECT account_id FROM account WHERE user_id = ?); ";
+        SqlRowSet rowSetForTransfers = jdbcTemplate.queryForRowSet(sql, userId, userId);
+        while (rowSetForTransfers.next()){
+            myTransfers.add(mapRowToTransfer(rowSetForTransfers));
+        }
+
+        return myTransfers;
     }
 
 
