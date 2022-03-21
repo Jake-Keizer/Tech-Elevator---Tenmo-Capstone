@@ -2,6 +2,7 @@ package com.techelevator.tenmo.services;
 
 
 import com.techelevator.tenmo.model.UserCredentials;
+import io.cucumber.java.eo.Do;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
@@ -57,24 +58,24 @@ public class ConsoleService {
         return scanner.nextLine();
     }
 
-    public int promptForInt(String prompt) {
+    public long promptForInt(String prompt) {
         System.out.print(prompt);
         while (true) {
             try {
-                return Integer.parseInt(scanner.nextLine());
+                return Long.parseLong(scanner.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a number.");
             }
         }
     }
 
-    public BigDecimal promptForBigDecimal(String prompt) {
+    public double promptForDouble(String prompt) {
         System.out.print(prompt);
         while (true) {
             try {
-                return new BigDecimal(scanner.nextLine());
+                return Double.parseDouble(scanner.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Please enter a decimal number.");
+                System.out.println("Please enter a double number.");
             }
         }
     }

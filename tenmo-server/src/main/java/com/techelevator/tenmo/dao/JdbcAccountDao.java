@@ -7,6 +7,8 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JdbcAccountDao implements AccountDao{
@@ -88,7 +90,26 @@ public class JdbcAccountDao implements AccountDao{
         }
         return account.getBalance();
     }
+    @Override
+    public List<Account> listAccounts() {
+        List<Account> accounts = new ArrayList<>();
+        String sql = "SELECT  user_id, account_id " +
+                "FROM account; ";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+        while (results.next()) {
+            accounts.add(mapRowToAccountNoBalance(results));
+        }
+        return accounts;
+    }
 
+
+
+    private Account mapRowToAccountNoBalance(SqlRowSet results){
+        Account account = new Account();
+        account.setAccountId(results.getLong("account_id"));
+        account.setUserId(results.getLong("user_id"));
+        return account;
+    }
 
     private Account mapRowToAccount(SqlRowSet results){
         Account account = new Account();
