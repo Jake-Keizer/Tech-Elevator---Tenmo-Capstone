@@ -7,6 +7,8 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JdbcAccountDao implements AccountDao{
@@ -17,12 +19,16 @@ public class JdbcAccountDao implements AccountDao{
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public JdbcAccountDao() {
+
+    }
+
     @Override
     public Account getAccountById(long accountId) {
         Account account = new Account();
         String sql = "SELECT * " +
-                    "FROM account " +
-                    "WHERE account_id = ?; ";
+                "FROM account " +
+                "WHERE account_id = ?; ";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
         if (results.next()){
             account = mapRowToAccount(results);
@@ -34,9 +40,9 @@ public class JdbcAccountDao implements AccountDao{
     public Account getAccountByUsername(String userName) {
         Account account = new Account();
         String sql = "SELECT a.* " +
-                    "FROM account a " +
-                    "JOIN tenmo_user t USING (user_id) " +
-                    "WHERE t.username = ?; ";
+                "FROM account a " +
+                "JOIN tenmo_user t USING (user_id) " +
+                "WHERE t.username = ?; ";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userName);
         if (results.next()){
             account = mapRowToAccount(results);
@@ -48,8 +54,8 @@ public class JdbcAccountDao implements AccountDao{
     public double checkAccountBalance(long userId) {
         double balance = 0;
         String sql = "SELECT * " +
-                    "FROM account " +
-                    "WHERE user_id = ?; ";
+                "FROM account " +
+                "WHERE user_id = ?; ";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
         if (results.next()){
             balance = mapRowToAccount(results).getBalance();
@@ -61,8 +67,8 @@ public class JdbcAccountDao implements AccountDao{
     public double addToBalance(double deposit, long accountId) {
         Account account = getAccountById(accountId);
         String sql = "UPDATE account " +
-                    "SET balance = balance + ? " +
-                    "WHERE user_id = ?; ";
+                "SET balance = balance + ? " +
+                "WHERE user_id = ?; ";
         try {
             int output = jdbcTemplate.update(sql, deposit, accountId);
             System.out.println("addTo rows affected : " + output);
@@ -77,11 +83,11 @@ public class JdbcAccountDao implements AccountDao{
     public double decreaseBalance(double withdraw, long accountId) {
         Account account = getAccountById(accountId);
         String sql = "UPDATE account " +
-                    "SET balance = balance - ? " +
-                    "WHERE user_id = ?; ";
+                "SET balance = balance - ? " +
+                "WHERE user_id = ?; ";
         try {
-           int output = jdbcTemplate.update(sql, withdraw, accountId);
-           System.out.println("withdraw rows affected: " + output);
+            int output = jdbcTemplate.update(sql, withdraw, accountId);
+            System.out.println("withdraw rows affected: " + output);
         } catch (DataAccessException e){
             e.printStackTrace();
             System.out.println("unable to update balance");
@@ -89,6 +95,26 @@ public class JdbcAccountDao implements AccountDao{
         return account.getBalance();
     }
 
+    @Override
+    public List<Account> listAccounts() {
+        List<Account> accounts = new ArrayList<>();
+        String sql = "SELECT  user_id, account_id " +
+                "FROM account; ";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+        while (results.next()) {
+            accounts.add(mapRowToAccountNoBalance(results));
+        }
+        return accounts;
+    }
+
+
+
+    private Account mapRowToAccountNoBalance(SqlRowSet results){
+        Account account = new Account();
+        account.setAccountId(results.getLong("account_id"));
+        account.setUserId(results.getLong("user_id"));
+        return account;
+    }
 
     private Account mapRowToAccount(SqlRowSet results){
         Account account = new Account();

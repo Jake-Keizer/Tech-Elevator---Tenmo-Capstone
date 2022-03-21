@@ -1,10 +1,15 @@
 package com.techelevator.tenmo;
 
+import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
+import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.UserCredentials;
 import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.tenmo.services.TransferService;
+
+import java.util.List;
 
 public class App {
 
@@ -12,10 +17,10 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
-
     private AuthenticatedUser currentUser;
 
     private final AccountService accountService = new AccountService();
+    private final TransferService transferService = new TransferService();
 
     public static void main(String[] args) {
         App app = new App();
@@ -29,6 +34,7 @@ public class App {
             mainMenu();
         }
     }
+
     private void loginMenu() {
         int menuSelection = -1;
         while (menuSelection != 0 && currentUser == null) {
@@ -69,7 +75,7 @@ public class App {
             consoleService.printMainMenu();
             menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
             if (menuSelection == 1) {
-                viewCurrentBalance(currentUser);
+                viewCurrentBalance();
             } else if (menuSelection == 2) {
                 viewTransferHistory();
             } else if (menuSelection == 3) {
@@ -87,30 +93,48 @@ public class App {
         }
     }
 
-	private void viewCurrentBalance(AuthenticatedUser currentUser) {
-		// TODO Auto-generated method stub
-       accountService.checkAccountBalance(currentUser);
-		
-	}
+    private void viewCurrentBalance() {
+        // TODO Auto-generated method stub
+        double balance = accountService.checkAccountBalance(currentUser.getToken());
+        System.out.println("\n\nBalance is: " + balance);
+    }
 
-	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
-		
-	}
+    private void viewTransferHistory() {
+        // TODO Auto-generated method stub;
+        List<Transfer> transferList = transferService.getTransfers(currentUser.getToken());
+        System.out.println("\n\nYour transfer history:");
+        for (int i = 0; i < transferList.size(); i++) {
+            System.out.println(transferList.get(i));
 
-	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
-		
-	}
+        }
 
-	private void sendBucks() {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	private void requestBucks() {
-		// TODO Auto-generated method stub
-		
-	}
+    private void viewPendingRequests() {
+        // TODO Auto-generated method stub
+
+    }
+
+    private void sendBucks() {
+        // TODO Auto-generated method stub;
+        List<Account> accounts = accountService.listAccounts(currentUser.getToken());
+        for (int i = 0; i < accounts.size(); i++) {
+            System.out.println(accounts.get(i));
+        }
+        Long toId = consoleService.promptForInt("Select userId from above list: ");
+        double transferAmount = consoleService.promptForDouble("Enter amount to transfer: ");
+        Transfer transfer = new Transfer();
+        transfer.setAmount(transferAmount);
+        transfer.setAccountTo(toId);
+        transfer.setAccountFrom(currentUser.getUser().getId());
+        transferService.sendTransfer(currentUser.getToken(), transfer);
+
+
+    }
+
+    private void requestBucks() {
+        // TODO Auto-generated method stub
+
+    }
 
 }

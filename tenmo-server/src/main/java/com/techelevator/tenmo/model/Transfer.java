@@ -37,7 +37,7 @@ public class Transfer {
         this.amount = amount;
     }
 
-    
+
 
     public long  getTransferTypeId() {
         return transferTypeId;

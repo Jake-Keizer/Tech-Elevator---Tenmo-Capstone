@@ -4,91 +4,56 @@ import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.AuthenticatedUser;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
+@Component
 public class AccountService {
 
-    public static final String API_BASE_URL = "http://localhost:8080/";
-
+    private  String API_BASE_URL = "http://localhost:8080/";
     private RestTemplate restTemplate = new RestTemplate();
-
-            private String authToken = null;
-
-
-            public void SetAuthToken(String authToken) {this.authToken = authToken;}
+    private AuthenticatedUser currentUser;
 
 
-            public Account[]  getAllAccounts(AuthenticatedUser currentUser) {
-                Account[] accounts = null;
-
-                try {
-
-                    ResponseEntity<Account[]> response =
-                            restTemplate.exchange(API_BASE_URL, HttpMethod.GET, makeAuthEntity(currentUser), Account[].class);
-                    accounts = response.getBody();
-                } catch (RestClientResponseException | ResourceAccessException e) {
-                    BasicLogger.log(e.getMessage());
-                }
-                return accounts;
-            }
-
-
-    public double checkAccountBalance(AuthenticatedUser currentUser) {
+    public double checkAccountBalance(String authToken) {
         double balance = 0;
-        Account account = new Account();
-        HttpEntity<Account> entity = makeAccountEntity(account);
         try {
-            entity = restTemplate.exchange(API_BASE_URL + "balance", HttpMethod.GET, makeAuthEntity(currentUser), Account.class);
-            balance = entity.getBody().getBalance();
+            balance = restTemplate.exchange(API_BASE_URL + "balance" , HttpMethod.GET, makeAuthEntity(authToken), double.class).getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
-            BasicLogger.log(e.getMessage());
+            System.out.println(e.getMessage());
         }
         return balance;
-
-
     }
 
-
-
-
-            public boolean updateAccount(Account updatedAccount) {
-             HttpEntity<Account> entity = makeAccountEntity(updatedAccount);
-
-            boolean success = false;
-            try {
-                restTemplate.put(API_BASE_URL + updatedAccount.getAccountId(), entity);
-                success = true;
-            } catch (RestClientResponseException | ResourceAccessException e) {
-                BasicLogger.log(e.getMessage());
-            }
-            return success;
+    public List<Account> listAccounts(String authToken){
+        List<Account> allAccounts = null;
+        try {
+            allAccounts = restTemplate.exchange(API_BASE_URL + "users", HttpMethod.GET, makeAuthEntity(authToken), List.class).getBody();
+        } catch (ResourceAccessException | RestClientResponseException e) {
+            System.out.println(e.getMessage());
+        }
+        return allAccounts;
     }
 
-
-    
-    private HttpEntity<AuthenticatedUser> makeAuthEntity(AuthenticatedUser currentUser) {
+    private HttpEntity makeAuthEntity(String authToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(currentUser.getToken());
-        return new HttpEntity<>(currentUser, headers);
+        headers.setBearerAuth(authToken);
+        return new HttpEntity<>(headers);
     }
 
-    private HttpEntity<Account> makeAccountEntity(Account account) {
+    private HttpEntity makeAccountEntity(String authToken) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(authToken);
-        return new HttpEntity<>(account, headers);
+        return new HttpEntity<>(headers);
     }
 
 
-
-
 }
-
 
 
 
